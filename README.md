@@ -1,113 +1,156 @@
-📘 EduTrack Lite API
-A lightweight course tracking system built with FastAPI, designed to manage users, courses, and enrollments with ease. It showcases CRUD operations, data validation, and entity relationships in a simple, in-memory setup.
+EduTrack Lite API
+A lightweight RESTful API for educational data management built with FastAPI. Designed for efficient course tracking, user management, and enrollment workflows with robust validation and clean architecture.
+Overview
+EduTrack Lite demonstrates production-ready API design patterns including CRUD operations, business logic validation, and relational data management using an in-memory data store optimized for rapid prototyping and testing.
+Core Features
+User Management
 
-🚀 Features
-👤 User Endpoints
+Complete CRUD operations with data validation
+User activation/deactivation for access control
+Active status enforcement for enrollment eligibility
 
-Create, Read, Update, Delete (CRUD) operations for users
-Deactivate a user to prevent further enrollments
+Course Management
 
-🗓️ Course Endpoints
+Full course lifecycle management (create, read, update, delete)
+Enrollment status controls (open/closed)
+Course enrollment tracking and reporting
 
-Create, Read, Update, Delete (CRUD) operations for courses
-Close enrollment for a course
-View all users enrolled in a specific course
+Enrollment System
 
-📝 Enrollment Endpoints
+Smart enrollment validation (prevents duplicates, enforces business rules)
+Course completion tracking
+User-specific and course-specific enrollment queries
+Automatic constraint enforcement (active users, open courses)
 
-Enroll a user in an open course
-Only active users can enroll
-Courses must be open for enrollment
-Prevent duplicate enrollments for the same course
-Mark a course as completed
-View enrollments for a specific user
-View all enrollments
-
-
-📂 Project Structure
+Architecture
 edutrack-lite/
-├── main.py
-├── schemas/
-│   ├── __init__.py
-├── routes/
-│   ├── __init__.py
+├── main.py                 # Application entry point
+├── schemas/                # Pydantic models for validation
+├── routes/                 # API endpoint definitions
 │   ├── users.py
 │   ├── courses.py
 │   └── enrollments.py
 └── services/
-    ├── __init__.py
-    └── database.py
+    └── database.py         # In-memory data persistence layer
+Design Principles:
 
+Separation of concerns (routes, schemas, services)
+Pydantic-based validation for data integrity
+RESTful conventions with proper HTTP status codes
+Automatic API documentation generation
 
-⚙️ Technical Details
+Tech Stack
 
 Framework: FastAPI
-Validation: Pydantic models for robust data validation
-Database: In-memory lists/dictionaries (no external database required)
-Testing: Pytest for unit and integration tests
-Status Codes: Standard REST API codes (200, 201, 400, 404, 409, etc.)
+Validation: Pydantic v2
+Testing: Pytest
+Data Storage: In-memory (ideal for development/testing)
+Documentation: Auto-generated OpenAPI (Swagger/ReDoc)
 
+Getting Started
+Prerequisites
 
-▶️ Getting Started
+Python 3.8+
+pip
 
-Clone the repository:
-git clone https://github.com/your-username/edutrack-lite-api.git
-cd edutrack-lite-api
+Installation
 
+Clone the repository
 
-Create and activate a virtual environment:
-python -m venv venv
-venv\Scripts\activate   # On Windows
-source venv/bin/activate  # On macOS/Linux
+bash   git clone https://github.com/your-username/edutrack-lite-api.git
+   cd edutrack-lite-api
 
+Set up virtual environment
 
-Install dependencies:
-pip install -r requirements.txt
+bash   python -m venv venv
+   source venv/bin/activate  # macOS/Linux
+   venv\Scripts\activate     # Windows
 
+Install dependencies
 
-Run the application:
-uvicorn main:app --reload
+bash   pip install -r requirements.txt
 
-The API will be available at: 👉 http://127.0.0.1:8000
-Explore the interactive API documentation at: 👉 http://127.0.0.1:8000/docs
+Run the application
 
+bash   uvicorn main:app --reload
+Access Points
 
+API Base: http://127.0.0.1:8000
+Interactive Docs: http://127.0.0.1:8000/docs (Swagger UI)
+Alternative Docs: http://127.0.0.1:8000/redoc (ReDoc)
 
-🧪 Running Tests
-Run the test suite with:
-pytest
+API Endpoints
+Users
 
+POST /users - Create new user
+GET /users - List all users
+GET /users/{id} - Get user details
+PUT /users/{id} - Update user
+DELETE /users/{id} - Remove user
+PATCH /users/{id}/deactivate - Deactivate user account
 
-📊 Example Data
-Below is a sample of the data structure used in the API:
-{
-  "course": {
-    "id": 1,
-    "title": "Python Basics",
-    "description": "Learn Python",
-    "is_open": true
-  },
-  "user": {
-    "id": 1,
-    "name": "Alice",
-    "email": "alice@example.com",
-    "is_active": true
-  },
-  "enrollment": {
-    "id": 1,
-    "user_id": 1,
-    "course_id": 1,
-    "enrolled_date": "2025-09-16",
-    "completed": false
-  }
+Courses
+
+POST /courses - Create new course
+GET /courses - List all courses
+GET /courses/{id} - Get course details
+PUT /courses/{id} - Update course
+DELETE /courses/{id} - Remove course
+PATCH /courses/{id}/close - Close enrollment
+GET /courses/{id}/enrollments - View enrolled users
+
+Enrollments
+
+POST /enrollments - Enroll user in course
+GET /enrollments - List all enrollments
+GET /enrollments/user/{user_id} - User's enrollments
+PATCH /enrollments/{id}/complete - Mark course completed
+
+Testing
+Run the test suite:
+bashpytest
+Run with coverage report:
+bashpytest --cov=. --cov-report=html
+Data Models
+User
+json{
+  "id": 1,
+  "name": "Alice Johnson",
+  "email": "alice.johnson@example.com",
+  "is_active": true
 }
+Course
+json{
+  "id": 1,
+  "title": "Python for Backend Development",
+  "description": "Learn FastAPI and database integration",
+  "is_open": true
+}
+Enrollment
+json{
+  "id": 1,
+  "user_id": 1,
+  "course_id": 1,
+  "enrolled_date": "2025-10-29",
+  "completed": false
+}
+Business Logic
 
+Enrollment Validation: Only active users can enroll in open courses
+Duplicate Prevention: Users cannot enroll in the same course twice
+Cascading Updates: Deactivated users lose enrollment privileges
+Status Tracking: Course completion status persists independently
 
-📝 Notes
+Future Enhancements
 
-No authentication is required, keeping the system lightweight and accessible
-Pydantic ensures simple yet effective data validation
-Ideal for learning and prototyping FastAPI applications
+ Database integration (PostgreSQL/MySQL)
+ JWT authentication and authorization
+ Course capacity limits and waitlist management
+ Email notifications for enrollments
+ Advanced filtering and pagination
+ Docker containerization
 
-
-Thanks
+Contributing
+This project is open for feedback and contributions. Feel free to fork, submit issues, or create pull requests.
+License
+MIT License - See LICENSE file for details
